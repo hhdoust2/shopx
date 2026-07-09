@@ -2,16 +2,18 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>فروشگاه عطر رایحه - پیشرفته</title>
+    <title>فروشگاه عطر رایحه - پنل مدیریت و کاربری</title>
     <style>
         /* ---------- پایه ---------- */
-        body{margin:0;font-family:"Tahoma",sans-serif;background:#f9f9f9;color:#333}
+        body{margin:0;font-family:"Tahoma",sans-serif;background:#f4f6f9;color:#333;line-height:1.6}
         a{text-decoration:none;color:inherit}
         header,footer{background:#6a1b9a;color:#fff;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
         header h1{margin:0;font-size:1.8rem}
         nav{display:flex;gap:1.5rem;align-items:center}
         nav a{font-weight:bold;color:#fff;cursor:pointer}
         main{padding:2rem;max-width:1200px;margin:0 auto}
+        
+        /* ---------- محصولات ---------- */
         .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2rem}
         .card{background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);overflow:hidden;display:flex;flex-direction:column}
         .card img{width:100%;height:180px;object-fit:cover}
@@ -19,36 +21,42 @@
         .card-body h3{margin:0 0 .5rem;font-size:1.2rem;color:#6a1b9a}
         .card-body p{flex:1;margin:0 0 .5rem;font-size:.9rem;line-height:1.4;color:#555}
         .price{font-weight:bold;color:#c2185b;margin-top:.5rem;margin-bottom:.5rem}
+        
+        /* ---------- دکمه‌ها و المان‌ها ---------- */
         .btn{background:#6a1b9a;color:#fff;border:none;padding:.5rem 1rem;border-radius:4px;cursor:pointer;font-family:"Tahoma"}
         .btn:hover{background:#5a0e87}
         .btn-danger {background:#c2185b}
         .btn-danger:hover {background:#a1134b}
+        .btn-success {background:#4caf50}
+        .btn-success:hover {background:#388e3c}
+        
         .section{background:#fff;padding:1.5rem;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.05);margin-bottom:2rem}
-        .section h2{color:#6a1b9a;margin-top:0}
+        .section h2, .section h3{color:#6a1b9a;margin-top:0}
         footer{background:#333;color:#ddd;text-align:center;padding:1rem;margin-top:3rem}
         
-        /* ---------- فرم‌ها و اینپوت‌ها ---------- */
+        /* ---------- فرم‌ها ---------- */
         .form-group {margin-bottom:1rem;display:flex;flex-direction:column;gap:0.3rem}
-        .form-group input, .form-group textarea {padding:0.6rem;border:1px solid #ccc;border-radius:4px;font-family:"Tahoma"}
+        .form-group input, .form-group textarea, .form-group select {padding:0.6rem;border:1px solid #ccc;border-radius:4px;font-family:"Tahoma";font-size:0.9rem}
         
-        /* ---------- سبد خرید و مودال‌ها ---------- */
-        .modal{
-            position:fixed;top:0;left:0;width:100%;height:100%;
-            background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;
-        }
-        .modal-content{
-            background:#fff;padding:1.5rem;border-radius:8px;max-width:550px;width:90%;max-height:85vh;overflow-y:auto;
-        }
-        #cartItems, .order-list{max-height:250px;overflow-y:auto;margin-bottom:1rem}
-        .cart-item, .order-item{display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0;padding-bottom:0.5rem;border-bottom:1px solid #eee}
+        /* ---------- مودال‌ها ---------- */
+        .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000}
+        .modal-content{background:#fff;padding:1.5rem;border-radius:8px;max-width:550px;width:90%;max-height:85vh;overflow-y:auto}
+        #cartItems, .order-list{max-height:350px;overflow-y:auto;margin-bottom:1rem}
+        .cart-item, .order-item{display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0;padding-bottom:0.7rem;border-bottom:1px solid #eee}
         .empty{color:#777;text-align:center;margin:1rem 0}
-        .total{font-weight:bold;margin-top:.5rem;text-align:left;color:#c2185b}
+        .total{font-weight:bold;margin-top:.5rem;text-align:left;color:#c2185b;font-size:1.1rem}
         
-        /* ---------- استایل سفارشات و وضعیت ---------- */
-        .status-badge {padding:0.2rem 0.6rem;border-radius:12px;font-size:0.8rem;font-weight:bold;color:#fff}
+        /* ---------- وضعیت‌ها ---------- */
+        .status-badge {padding:0.3rem 0.6rem;border-radius:12px;font-size:0.8rem;font-weight:bold;color:#fff}
         .status-processing {background:#ff9800}
         .status-shipped {background:#2196f3}
         .status-delivered {background:#4caf50}
+        
+        /* ---------- داشبورد مدیریت ---------- */
+        .dashboard-grid {display:grid;grid-template-columns:repeat(auto-fit, minmax(200px,1fr));gap:1rem;margin-bottom:1.5rem}
+        .stat-card {background:#f0e4f7;padding:1rem;border-radius:6px;text-align:center;border-right:5px solid #6a1b9a}
+        .stat-card h4 {margin:0;color:#555;font-size:0.9rem}
+        .stat-card p {margin:0.5rem 0 0;font-size:1.4rem;font-weight:bold;color:#6a1b9a}
         
         .badge {background:#c2185b;color:#fff;padding:0.1rem 0.4rem;border-radius:50%;font-size:0.8rem}
         .hidden {display:none !important}
@@ -62,6 +70,7 @@
         <a onclick="showSection('home')">خانه</a>
         <a onclick="showSection('about')">درباره ما</a>
         <a onclick="showSection('user-panel')" id="nav-profile" class="hidden">پنل کاربری</a>
+        <a onclick="showSection('admin-panel')" id="nav-admin" class="hidden" style="color:#ffeb3b">★ پنل مدیریت</a>
         <a onclick="openModal('authModal')" id="nav-auth">ورود / ثبت‌نام</a>
         <a onclick="openCart()">سبد خرید (<span id="cartCount" class="badge">0</span>)</a>
     </nav>
@@ -69,36 +78,9 @@
 
 <main>
     <div id="sec-home" class="page-section">
-        <h2>محصولات جدید</h2>
-        <div class="products">
-            <div class="card">
-                <img src="https://via.placeholder.com/300x180?text=عطر+1" alt="عطر الویه">
-                <div class="card-body">
-                    <h3>عطر الویه</h3>
-                    <p>ترکیبی از نت‌های گلابی، خزامی و سدر که احساس تازگی و شیکی می‌دهد.</p>
-                    <div class="price">۲,۵۰۰ تومان</div>
-                    <button class="btn" onclick="addToCart('عطر الویه',2500)">افزودن به سبد</button>
-                </div>
+        <h2>محصولات جدید فروشگاه</h2>
+        <div class="products" id="products-container">
             </div>
-            <div class="card">
-                <img src="https://via.placeholder.com/300x180?text=عطر+2" alt="عطر گلستان">
-                <div class="card-body">
-                    <h3>عطر گلستان</h3>
-                    <p>عطر گل‌بارانی، ترکیب رز، یاس و سیتروس برای روزهای خاص.</p>
-                    <div class="price">۳,۸۰۰ تومان</div>
-                    <button class="btn" onclick="addToCart('عطر گلستان',3800)">افزودن به سبد</button>
-                </div>
-            </div>
-            <div class="card">
-                <img src="https://via.placeholder.com/300x180?text=عطر+3" alt="عطر نقره‌ای">
-                <div class="card-body">
-                    <h3>عطر نقره‌ای</h3>
-                    <p>هدیه‌ای از نبوغ ایمال، با نت‌های چوبی و مرکباتی.</p>
-                    <div class="price">۴,۲۰۰ تومان</div>
-                    <button class="btn" onclick="addToCart('عطر نقره‌ای',4200)">افزودن به سبد</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div id="sec-about" class="page-section hidden">
@@ -117,58 +99,66 @@
         <div class="section">
             <h3>اطلاعات حساب و آدرس ارسال</h3>
             <form id="profileForm" onsubmit="saveProfile(event)">
-                <div class="form-group">
-                    <label>نام و نام خانوادگی:</label>
-                    <input type="text" id="prof-name" required>
-                </div>
-                <div class="form-group">
-                    <label>شماره تماس:</label>
-                    <input type="text" id="prof-phone" required>
-                </div>
-                <div class="form-group">
-                    <label>آدرس دقیق پستی جهت ارسال:</label>
-                    <textarea id="prof-address" rows="3" required></textarea>
-                </div>
+                <div class="form-group"><label>نام و نام خانوادگی:</label><input type="text" id="prof-name" required></div>
+                <div class="form-group"><label>شماره تماس:</label><input type="text" id="prof-phone" required></div>
+                <div class="form-group"><label>آدرس دقیق پستی جهت ارسال:</label><textarea id="prof-address" rows="3" required></textarea></div>
                 <button type="submit" class="btn">بروزرسانی اطلاعات</button>
             </form>
         </div>
 
         <div class="section">
             <h3>تاریخچه سفارشات و وضعیت ارسال</h3>
-            <div id="userOrders" class="order-list">
-                </div>
+            <div id="userOrders" class="order-list"></div>
         </div>
-        
+    </div>
+
+    <div id="sec-admin-panel" class="page-section hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem">
+            <h2>🛠️ پیشخوان مدیریت و فروشندگان</h2>
+            <button class="btn btn-danger" onclick="logout()">خروج از پنل مدیریت</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="stat-card"><h4>کل درآمد واریزی</h4><p id="stat-revenue">۰ تومان</p></div>
+            <div class="stat-card"><h4>تعداد کل سفارشات</h4><p id="stat-orders-count">۰</p></div>
+            <div class="stat-card"><h4>تعداد محصولات</h4><p id="stat-products-count">۰</p></div>
+        </div>
+
         <div class="section">
-            <h3>پیگیری سریع سفارش</h3>
-            <div class="form-group" style="flex-direction:row; gap:1rem;">
-                <input type="text" id="trackInput" placeholder="کد پیگیری سفارش را وارد کنید" style="flex:1">
-                <button class="btn" onclick="trackOrder()">بررسی وضعیت</button>
-            </div>
-            <div id="trackResult" style="font-weight:bold; color:#6a1b9a; margin-top:0.5rem"></div>
+            <h3>➕ افزودن محصول جدید به فروشگاه</h3>
+            <form id="addProductForm" onsubmit="addNewProduct(event)">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group"><label>نام عطر:</label><input type="text" id="p-name" required></div>
+                    <div class="form-group"><label>قیمت (تومان):</label><input type="number" id="p-price" required></div>
+                </div>
+                <div class="form-group"><label>لینک عکس محصول:</label><input type="text" id="p-image" value="https://via.placeholder.com/300x180?text=Perfume" required></div>
+                <div class="form-group"><label>توضیحات عطر:</label><textarea id="p-desc" rows="2" required></textarea></div>
+                <button type="submit" class="btn btn-success">انتشار محصول در سایت</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h3>📦 مدیریت و تغییر وضعیت سفارشات خریداران</h3>
+            <div id="adminOrdersList">
+                </div>
         </div>
     </div>
 </main>
 
 <footer>
-    © 2026 فروشگاه عطر رایحه – همه حقوق محفوظ است.
+    © 2026 فروشگاه عطر رایحه – بخش مدیریت و فروش پیشرفته
 </footer>
 
 <div id="authModal" class="modal">
     <div class="modal-content">
         <h3 id="authTitle">ورود به حساب</h3>
+        <p style="font-size:0.8rem; color:#777;" id="admin-hint">💡 برای ورود به پنل مدیریت از نام کاربری <b>admin</b> و رمز <b>admin</b> استفاده کنید.</p>
         <form id="authForm" onsubmit="handleAuth(event)">
-            <div class="form-group">
-                <label>نام کاربری (ایمیل یا شماره):</label>
-                <input type="text" id="auth-username" required>
-            </div>
-            <div class="form-group">
-                <label>رمز عبور:</label>
-                <input type="password" id="auth-password" required>
-            </div>
+            <div class="form-group"><label>نام کاربری:</label><input type="text" id="auth-username" required></div>
+            <div class="form-group"><label>رمز عبور:</label><input type="password" id="auth-password" required></div>
             <div style="margin-top:1rem; display:flex; gap:1rem">
                 <button type="submit" class="btn" id="authBtn">ورود</button>
-                <button type="button" class="btn" style="background:#555" onclick="toggleAuthMode()" id="authToggleBtn">ثبت نام کنید</button>
+                <button type="button" class="btn" style="background:#555" onclick="toggleAuthMode()" id="authToggleBtn">ثبت نام کاربری جدید</button>
                 <button type="button" class="btn btn-danger" onclick="closeModal('authModal')">بستن</button>
             </div>
         </form>
@@ -181,41 +171,79 @@
         <div id="cartItems"></div>
         <div class="total" id="cartTotal"></div>
         <div style="margin-top:1.5rem; display:flex; gap:0.5rem">
-            <button class="btn" onclick="checkout()">تکمیل سفارش و پرداخت</button>
+            <button class="btn" onclick="checkout()">تکمیل سفارش و پرداخت آنلاین</button>
             <button class="btn btn-danger" onclick="closeModal('cartModal')">بستن</button>
         </div>
     </div>
 </div>
 
 <script>
-/* ---------- مدیریت وضعیت (State) با LocalStorage ---------- */
+/* ---------- دیتابیس اولیه پیش‌فرض ---------- */
+const defaultProducts = [
+    {id: 1, name: 'عطر الویه', price: 2500, desc: 'ترکیبی از نت‌های گلابی، خزامی و سدر که احساس تازگی و شیکی می‌دهد.', img: 'https://via.placeholder.com/300x180?text=عطر+1'},
+    {id: 2, name: 'عطر گلستان', price: 3800, desc: 'عطر گل‌بارانی، ترکیب رز، یاس و سیتروس برای روزهای خاص.', img: 'https://via.placeholder.com/300x180?text=عطر+2'},
+    {id: 3, name: 'عطر نقره‌ای', price: 4200, desc: 'هدیه‌ای از نبوغ ایمال، با نت‌های چوبی و مرکباتی.', img: 'https://via.placeholder.com/300x180?text=عطر+3'}
+];
+
+// مقداردهی دیتابیس در LocalStorage
+if(!localStorage.getItem('productsDB')) localStorage.setItem('productsDB', JSON.stringify(defaultProducts));
+if(!localStorage.getItem('usersDB')) localStorage.setItem('usersDB', JSON.stringify({}));
+if(!localStorage.getItem('ordersDB')) localStorage.setItem('ordersDB', JSON.stringify([]));
+
 let cart = [];
 let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 let isSignUpMode = false;
 
-// شبیه‌ساز پایگاه داده کاربران و سفارشات در مرورگر
-if(!localStorage.getItem('usersDB')) localStorage.setItem('usersDB', JSON.stringify({}));
-if(!localStorage.getItem('ordersDB')) localStorage.setItem('ordersDB', JSON.stringify([]));
-
-/* ---------- سیستم ناوبری ---------- */
+/* ---------- ناوبری و تغییر صفحات ---------- */
 function showSection(sectionId) {
     document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
     document.getElementById('sec-' + sectionId).classList.remove('hidden');
+    
     if(sectionId === 'user-panel') renderUserPanel();
+    if(sectionId === 'admin-panel') renderAdminPanel();
 }
 
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-/* ---------- سیستم احراز هویت ---------- */
+/* ---------- رندر محصولات در صفحه اصلی ---------- */
+function renderProducts() {
+    const container = document.getElementById('products-container');
+    container.innerHTML = '';
+    const products = JSON.parse(localStorage.getItem('productsDB'));
+    
+    products.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <img src="${p.img}" alt="${p.name}">
+            <div class="card-body">
+                <h3>${p.name}</h3>
+                <p>${p.desc}</p>
+                <div class="price">${p.price.toLocaleString()} تومان</div>
+                <button class="btn" onclick="addToCart('${p.name}', ${p.price})">افزودن به سبد</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+/* ---------- سیستم ورود و خروج (تشخیص مدیر) ---------- */
 function updateAuthUI() {
+    document.getElementById('nav-auth').classList.add('hidden');
+    document.getElementById('nav-profile').classList.add('hidden');
+    document.getElementById('nav-admin').classList.add('hidden');
+
     if(currentUser) {
-        document.getElementById('nav-auth').classList.add('hidden');
-        document.getElementById('nav-profile').classList.remove('hidden');
-        document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
+        if(currentUser.username === 'admin') {
+            document.getElementById('nav-admin').classList.remove('hidden');
+            showSection('admin-panel');
+        } else {
+            document.getElementById('nav-profile').classList.remove('hidden');
+            document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
+        }
     } else {
         document.getElementById('nav-auth').classList.remove('hidden');
-        document.getElementById('nav-profile').classList.add('hidden');
         showSection('home');
     }
 }
@@ -224,7 +252,8 @@ function toggleAuthMode() {
     isSignUpMode = !isSignUpMode;
     document.getElementById('authTitle').textContent = isSignUpMode ? 'ثبت نام حساب جدید' : 'ورود به حساب';
     document.getElementById('authBtn').textContent = isSignUpMode ? 'ثبت نام' : 'ورود';
-    document.getElementById('authToggleBtn').textContent = isSignUpMode ? 'ورود به حساب' : 'ثبت نام کنید';
+    document.getElementById('authToggleBtn').textContent = isSignUpMode ? 'ورود به حساب' : 'ثبت نام کاربری جدید';
+    document.getElementById('admin-hint').style.display = isSignUpMode ? 'none' : 'block';
 }
 
 function handleAuth(e) {
@@ -233,11 +262,21 @@ function handleAuth(e) {
     const pass = document.getElementById('auth-password').value;
     let db = JSON.parse(localStorage.getItem('usersDB'));
 
+    // بررسی ورود مستقیم مدیر سیستم
+    if(!isSignUpMode && user === 'admin' && pass === 'admin') {
+        currentUser = { username: 'admin', name: 'مدیر کل فروشگاه' };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        closeModal('authModal');
+        updateAuthUI();
+        alert('به پنل مدیریت خوش آمدید، همکار گرامی.');
+        return;
+    }
+
     if(isSignUpMode) {
-        if(db[user]) { alert('این نام کاربری قبلاً ثبت شده است.'); return; }
+        if(db[user] || user === 'admin') { alert('این نام کاربری در سیستم موجود است.'); return; }
         db[user] = { username: user, password: pass, name: '', phone: '', address: '' };
         localStorage.setItem('usersDB', JSON.stringify(db));
-        alert('ثبت نام موفقیت آمیز بود! اکنون وارد شوید.');
+        alert('ثبت نام با موفقیت انجام شد! حالا می‌توانید وارد شوید.');
         toggleAuthMode();
     } else {
         if(db[user] && db[user].password === pass) {
@@ -245,7 +284,7 @@ function handleAuth(e) {
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             closeModal('authModal');
             updateAuthUI();
-            alert('خوش آمدید!');
+            alert('ورود با موفقیت انجام شد.');
         } else {
             alert('نام کاربری یا رمز عبور اشتباه است.');
         }
@@ -258,13 +297,42 @@ function logout() {
     updateAuthUI();
 }
 
-/* ---------- پروفایل کاربری ---------- */
+/* ---------- پنل خریداران ---------- */
 function renderUserPanel() {
     if(!currentUser) return;
     document.getElementById('prof-name').value = currentUser.name || '';
     document.getElementById('prof-phone').value = currentUser.phone || '';
     document.getElementById('prof-address').value = currentUser.address || '';
-    renderOrders();
+    
+    // رندر سفارشات کاربر
+    const ordersDiv = document.getElementById('userOrders');
+    ordersDiv.innerHTML = '';
+    const ordersDB = JSON.parse(localStorage.getItem('ordersDB'));
+    const myOrders = ordersDB.filter(o => o.username === currentUser.username);
+
+    if(myOrders.length === 0) {
+        ordersDiv.innerHTML = '<p class="empty">هنوز هیچ سفارشی ثبت نکرده‌اید.</p>';
+        return;
+    }
+
+    myOrders.reverse().forEach(order => {
+        let statusClass = order.shippingStatus === 'ارسال شده' ? 'status-shipped' : (order.shippingStatus === 'تحویل شده' ? 'status-delivered' : 'status-processing');
+        const el = document.createElement('div');
+        el.className = 'order-item';
+        el.style.flexDirection = 'column';
+        el.style.alignItems = 'flex-start';
+        el.innerHTML = `
+            <div style="display:flex; justify-content:space-between; width:100%">
+                <strong>کد پیگیری: ${order.id}</strong>
+                <span class="status-badge ${statusClass}">${order.shippingStatus}</span>
+            </div>
+            <div style="font-size:0.9rem; color:#555; margin-top:0.4rem;">
+                تاریخ تراکنش: ${order.date} | مبلغ پرداختی: ${order.totalAmount.toLocaleString()} تومان<br>
+                <small>کالاهای خریداری شده: ${order.items.map(i => `${i.name} (${i.qty}عدد)`).join(' - ')}</small>
+            </div>
+        `;
+        ordersDiv.appendChild(el);
+    });
 }
 
 function saveProfile(e) {
@@ -273,35 +341,113 @@ function saveProfile(e) {
     currentUser.phone = document.getElementById('prof-phone').value;
     currentUser.address = document.getElementById('prof-address').value;
     
-    // بروزرسانی در دیتابیس
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
     let db = JSON.parse(localStorage.getItem('usersDB'));
     db[currentUser.username] = currentUser;
     localStorage.setItem('usersDB', JSON.stringify(db));
-    
-    alert('اطلاعات با موفقیت ذخیره شد.');
-    updateAuthUI();
+    alert('اطلاعات پروفایل شما به روز شد.');
 }
 
-/* ---------- مدیریت سبد خرید ---------- */
+/* ---------- پنل جامع مدیریت و فروشندگان ---------- */
+function renderAdminPanel() {
+    const products = JSON.parse(localStorage.getItem('productsDB'));
+    const orders = JSON.parse(localStorage.getItem('ordersDB'));
+    
+    // محاسبه آمار مالی واریزی‌ها
+    const totalRevenue = orders.reduce((sum, o) => sum + o.totalAmount, 0);
+    document.getElementById('stat-revenue').textContent = totalRevenue.toLocaleString() + ' تومان';
+    document.getElementById('stat-orders-count').textContent = orders.length;
+    document.getElementById('stat-products-count').textContent = products.length;
+
+    // رندر لیست سفارشات برای مدیریت تغییر وضعیت ارسال
+    const adminOrdersList = document.getElementById('adminOrdersList');
+    adminOrdersList.innerHTML = '';
+
+    if(orders.length === 0) {
+        adminOrdersList.innerHTML = '<p class="empty">هیچ سفارشی در سیستم ثبت نشده است.</p>';
+        return;
+    }
+
+    orders.reverse().forEach((order, index) => {
+        const el = document.createElement('div');
+        el.className = 'order-item';
+        el.style.flexDirection = 'column';
+        el.style.background = '#f9f9f9';
+        el.style.padding = '1rem';
+        el.style.borderRadius = '6px';
+        el.style.marginBottom = '1rem';
+        
+        el.innerHTML = `
+            <div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid #ddd; padding-bottom:0.5rem">
+                <span><b>کد سفارش:</b> ${order.id} (کاربر: ${order.username})</span>
+                <div>
+                    <label style="font-size:0.85rem; font-weight:bold;">وضعیت ارسال: </label>
+                    <select onchange="changeOrderStatus('${order.id}', this.value)">
+                        <option value="در حال پردازش" ${order.shippingStatus==='در حال پردازش'?'selected':''}>در حال پردازش</option>
+                        <option value="ارسال شده" ${order.shippingStatus==='ارسال شده'?'selected':''}>ارسال شده 🚚</option>
+                        <option value="تحویل شده" ${order.shippingStatus==='تحویل شده'?'selected':''}>تحویل شده ✅</option>
+                    </select>
+                </div>
+            </div>
+            <div style="font-size:0.9rem; margin-top:0.5rem">
+                <b>اقلام سفارش:</b> ${order.items.map(i => `${i.name} (تعداد: ${i.qty})`).join('، ')} <br>
+                <b>مبلغ واریز شده:</b> ${order.totalAmount.toLocaleString()} تومان <br>
+                <b>آدرس گیرنده:</b> <span style="color:#c2185b">${order.address}</span>
+            </div>
+        `;
+        adminOrdersList.appendChild(el);
+    });
+}
+
+function changeOrderStatus(orderId, newStatus) {
+    let orders = JSON.parse(localStorage.getItem('ordersDB'));
+    const orderIndex = orders.findIndex(o => o.id === orderId);
+    if(orderIndex !== -1) {
+        orders[orderIndex].shippingStatus = newStatus;
+        localStorage.setItem('ordersDB', JSON.stringify(orders));
+        alert(`وضعیت سفارش ${orderId} به "${newStatus}" تغییر یافت.`);
+        renderAdminPanel();
+    }
+}
+
+function addNewProduct(e) {
+    e.preventDefault();
+    const name = document.getElementById('p-name').value.trim();
+    const price = parseInt(document.getElementById('p-price').value);
+    const img = document.getElementById('p-image').value.trim();
+    const desc = document.getElementById('p-desc').value.trim();
+
+    let products = JSON.parse(localStorage.getItem('productsDB'));
+    const newId = products.length > 0 ? products[products.length - 1].id + 1 : 1;
+    
+    products.push({ id: newId, name, price, desc, img });
+    localStorage.setItem('productsDB', JSON.stringify(products));
+    
+    alert('محصول جدید با موفقیت به ویترین فروشگاه اضافه شد!');
+    document.getElementById('addProductForm').reset();
+    
+    renderProducts();
+    renderAdminPanel();
+}
+
+/* ---------- سبد خرید و فرآیند تسویه حساب ---------- */
 function addToCart(name, price){
     const existing = cart.find(i=>i.name===name);
     if(existing) existing.qty+=1;
     else cart.push({name, price, qty:1});
     updateCartCount();
-    alert(name + " به سبد اضافه شد");
+    alert(name + " به سبد شما اضافه شد.");
 }
 
 function updateCartCount(){
-    const cnt = cart.reduce((s,i)=>s+i.qty,0);
-    document.getElementById('cartCount').textContent = cnt;
+    document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
 }
 
 function openCart(){
     const itemsDiv = document.getElementById('cartItems');
     itemsDiv.innerHTML = '';
     if(cart.length===0){
-        itemsDiv.innerHTML = '<p class="empty">سبد خرید خالی است</p>';
+        itemsDiv.innerHTML = '<p class="empty">سبد خرید شما خالی است</p>';
         document.getElementById('cartTotal').textContent = '';
     }else{
         let total = 0;
@@ -310,12 +456,12 @@ function openCart(){
             const el = document.createElement('div');
             el.className='cart-item';
             el.innerHTML = `
-                <span>${it.name} (×${it.qty})</span>
+                <span><b>${it.name}</b> (×${it.qty})</span>
                 <span>${(it.price*it.qty).toLocaleString()} تومان</span>
                 <button class="btn btn-danger" style="padding:.2rem .5rem; font-size:.8rem" onclick="removeItem(${i})">حذف</button>`;
             itemsDiv.appendChild(el);
         });
-        document.getElementById('cartTotal').textContent = 'مجموع قابل پرداخت: '+total.toLocaleString()+' تومان';
+        document.getElementById('cartTotal').textContent = 'جمع کل فاکتور: '+total.toLocaleString()+' تومان';
     }
     openModal('cartModal');
 }
@@ -326,26 +472,27 @@ function removeItem(idx){
     openCart();
 }
 
-/* ---------- ثبت سفارش و پرداخت مالی ---------- */
 function checkout(){
     if(!currentUser) {
-        alert('لطفاً ابتدا وارد حساب کاربری خود شوید.');
+        alert('جهت ثبت نهایی سفارش، ابتدا وارد حساب کاربری خود شوید.');
         closeModal('cartModal');
         openModal('authModal');
         return;
     }
+    if(currentUser.username === 'admin') {
+        alert('شما با حساب مدیریت وارد شده‌اید، برای ثبت سفارش لطفا به عنوان کاربر عادی ثبت نام کنید.');
+        return;
+    }
     if(!currentUser.address || !currentUser.phone) {
-        alert('لطفاً ابتدا نام، تلفن و آدرس خود را در پنل کاربری تکمیل کنید.');
+        alert('لطفا ابتدا مشخصات خود (آدرس و شماره تلفن) را در پنل کاربری تکمیل و ذخیره کنید.');
         closeModal('cartModal');
         showSection('user-panel');
         return;
     }
-    if(cart.length===0){ alert('سبد شما خالی است'); return; }
+    if(cart.length===0){ alert('سبد خرید شما خالی است.'); return; }
 
     const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
-    
-    // شبیه‌ساز پرداخت آنلاین و ثبت واریزی
-    const confirmPayment = confirm(`مبلغ کل: ${total.toLocaleString()} تومان\nآیا با پرداخت آنلاین و ثبت نهایی سفارش موافقید؟`);
+    const confirmPayment = confirm(`مبلغ قابل پرداخت: ${total.toLocaleString()} تومان\nآیا تراکنش واریزی شبیه‌سازی شود؟`);
     
     if(confirmPayment) {
         const orderId = 'RAIH' + Math.floor(100000 + Math.random()*900000);
@@ -354,81 +501,26 @@ function checkout(){
             username: currentUser.username,
             items: [...cart],
             totalAmount: total,
-            paymentStatus: 'موفق و واریز شده',
-            shippingStatus: 'در حال پردازش', // وضعیت ارسال اولیه
+            shippingStatus: 'در حال پردازش',
             date: new Date().toLocaleDateString('fa-IR'),
             address: currentUser.address
         };
 
-        // ذخیره در بانک سفارشات
         let ordersDB = JSON.parse(localStorage.getItem('ordersDB'));
         ordersDB.push(newOrder);
         localStorage.setItem('ordersDB', JSON.stringify(ordersDB));
 
-        // خالی کردن سبد خرید
         cart = [];
         updateCartCount();
         closeModal('cartModal');
         
-        alert(`پرداخت موفقیت‌آمیز بود!\nسفارش شما با کد پیگیری ${orderId} ثبت شد.`);
+        alert(`تراکنش بانکی موفق بود!\nسفارش شما با کد پیگیری ${orderId} ثبت شد. روند ارسال را از پنل خود پیگیری کنید.`);
         showSection('user-panel');
     }
 }
 
-/* ---------- نمایش وضعیت ارسال و تاریخچه تراکنش‌ها ---------- */
-function renderOrders() {
-    const ordersDiv = document.getElementById('userOrders');
-    ordersDiv.innerHTML = '';
-    const ordersDB = JSON.parse(localStorage.getItem('ordersDB'));
-    const myOrders = ordersDB.filter(o => o.username === currentUser.username);
-
-    if(myOrders.length === 0) {
-        ordersDiv.innerHTML = '<p class="empty">هیچ سفارشی ثبت نشده است.</p>';
-        return;
-    }
-
-    myOrders.reverse().forEach(order => {
-        let statusClass = 'status-processing';
-        if(order.shippingStatus === 'ارسال شده') statusClass = 'status-shipped';
-        if(order.shippingStatus === 'تحویل شده') statusClass = 'status-delivered';
-
-        const el = document.createElement('div');
-        el.className = 'order-item';
-        el.style.flexDirection = 'column';
-        el.style.alignItems = 'flex-start';
-        el.innerHTML = `
-            <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:0.5rem">
-                <strong>کد پیگیری: ${order.id}</strong>
-                <span class="status-badge ${statusClass}">${order.shippingStatus}</span>
-            </div>
-            <div style="font-size:0.9rem; color:#555; width:100%">
-                تاریخ: ${order.date} | مبلغ واریزی: ${order.totalAmount.toLocaleString()} تومان (${order.paymentStatus})<br>
-                <small>اقلام: ${order.items.map(i => `${i.name} (${i.qty})`).join('، ')}</small><br>
-                <small style="color:#777">ارسال به: ${order.address}</small>
-            </div>
-        `;
-        ordersDiv.appendChild(el);
-    });
-}
-
-/* ---------- پیگیری آنلاین سفارش ---------- */
-function trackOrder(){
-    const code = document.getElementById('trackInput').value.trim();
-    if(!code){ alert('لطفاً کد پیگیری را وارد کنید'); return; }
-    
-    const ordersDB = JSON.parse(localStorage.getItem('ordersDB'));
-    const foundOrder = ordersDB.find(o => o.id === code);
-    
-    const resultDiv = document.getElementById('trackResult');
-    if(foundOrder) {
-        resultDiv.innerHTML = `وضعیت سفارش ${code}: <span style="color:#4caf50">${foundOrder.shippingStatus}</span><br>
-        <small style="color:#555">محصولات در حال ارسال به: ${foundOrder.address}</small>`;
-    } else {
-        resultDiv.innerHTML = 'سفارشی با این کد پیگیری پیدا نشد. لطفاً دقت کنید.';
-    }
-}
-
-// مقداردهی اولیه برنامه
+// اجرای اولیه برنامه
+renderProducts();
 updateAuthUI();
 </script>
 </body>
