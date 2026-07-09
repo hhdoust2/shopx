@@ -2,41 +2,56 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>فروشگاه عطر رایحه</title>
+    <title>فروشگاه عطر رایحه - پیشرفته</title>
     <style>
         /* ---------- پایه ---------- */
         body{margin:0;font-family:"Tahoma",sans-serif;background:#f9f9f9;color:#333}
         a{text-decoration:none;color:inherit}
         header,footer{background:#6a1b9a;color:#fff;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
         header h1{margin:0;font-size:1.8rem}
-        nav a{margin-left:1rem;font-weight:bold;color:#fff}
-        main{padding:2rem}
+        nav{display:flex;gap:1.5rem;align-items:center}
+        nav a{font-weight:bold;color:#fff;cursor:pointer}
+        main{padding:2rem;max-width:1200px;margin:0 auto}
         .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-top:2rem}
         .card{background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1);overflow:hidden;display:flex;flex-direction:column}
         .card img{width:100%;height:180px;object-fit:cover}
         .card-body{padding:1rem;flex:1;display:flex;flex-direction:column}
         .card-body h3{margin:0 0 .5rem;font-size:1.2rem;color:#6a1b9a}
         .card-body p{flex:1;margin:0 0 .5rem;font-size:.9rem;line-height:1.4;color:#555}
-        .price{font-weight:bold;color:#c2185b;margin-top:.5rem}
-        .btn{background:#6a1b9a;color:#fff;border:none;padding:.5rem 1rem;border-radius:4px;cursor:pointer}
+        .price{font-weight:bold;color:#c2185b;margin-top:.5rem;margin-bottom:.5rem}
+        .btn{background:#6a1b9a;color:#fff;border:none;padding:.5rem 1rem;border-radius:4px;cursor:pointer;font-family:"Tahoma"}
         .btn:hover{background:#5a0e87}
-        .section{max-width:800px;margin:0 auto;line-height:1.6}
-        .section h2{color:#6a1b9a;margin-top:2rem}
+        .btn-danger {background:#c2185b}
+        .btn-danger:hover {background:#a1134b}
+        .section{background:#fff;padding:1.5rem;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.05);margin-bottom:2rem}
+        .section h2{color:#6a1b9a;margin-top:0}
         footer{background:#333;color:#ddd;text-align:center;padding:1rem;margin-top:3rem}
-        /* ---------- سبد خرید ----------
-        */
-        #cartModal{
+        
+        /* ---------- فرم‌ها و اینپوت‌ها ---------- */
+        .form-group {margin-bottom:1rem;display:flex;flex-direction:column;gap:0.3rem}
+        .form-group input, .form-group textarea {padding:0.6rem;border:1px solid #ccc;border-radius:4px;font-family:"Tahoma"}
+        
+        /* ---------- سبد خرید و مودال‌ها ---------- */
+        .modal{
             position:fixed;top:0;left:0;width:100%;height:100%;
-            background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;
+            background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:1000;
         }
-        #cartContent{
-            background:#fff;padding:1.5rem;border-radius:8px;max-width:500px;width:90%;
+        .modal-content{
+            background:#fff;padding:1.5rem;border-radius:8px;max-width:550px;width:90%;max-height:85vh;overflow-y:auto;
         }
-        #cartItems{max-height:300px;overflow-y:auto;margin-bottom:1rem}
-        .cart-item{display:flex;justify-content:space-between;margin:0.5rem 0}
-        .cart-item span{font-size:.9rem}
+        #cartItems, .order-list{max-height:250px;overflow-y:auto;margin-bottom:1rem}
+        .cart-item, .order-item{display:flex;justify-content:space-between;align-items:center;margin:0.5rem 0;padding-bottom:0.5rem;border-bottom:1px solid #eee}
         .empty{color:#777;text-align:center;margin:1rem 0}
-        .total{font-weight:bold;margin-top:.5rem;text-align:left}
+        .total{font-weight:bold;margin-top:.5rem;text-align:left;color:#c2185b}
+        
+        /* ---------- استایل سفارشات و وضعیت ---------- */
+        .status-badge {padding:0.2rem 0.6rem;border-radius:12px;font-size:0.8rem;font-weight:bold;color:#fff}
+        .status-processing {background:#ff9800}
+        .status-shipped {background:#2196f3}
+        .status-delivered {background:#4caf50}
+        
+        .badge {background:#c2185b;color:#fff;padding:0.1rem 0.4rem;border-radius:50%;font-size:0.8rem}
+        .hidden {display:none !important}
     </style>
 </head>
 <body>
@@ -44,130 +59,244 @@
 <header>
     <h1>فروشگاه عطر رایحه</h1>
     <nav>
-        <a href="#home">خانه</a>
-        <a href="#about">درباره ما</a>
-        <a href="#terms">قوانین</a>
-        <a href="#contact">تماس</a>
-        <a href="javascript:void(0)" onclick="openCart()">سبد خرید (<span id="cartCount">0</span>)</a>
+        <a onclick="showSection('home')">خانه</a>
+        <a onclick="showSection('about')">درباره ما</a>
+        <a onclick="showSection('user-panel')" id="nav-profile" class="hidden">پنل کاربری</a>
+        <a onclick="openModal('authModal')" id="nav-auth">ورود / ثبت‌نام</a>
+        <a onclick="openCart()">سبد خرید (<span id="cartCount" class="badge">0</span>)</a>
     </nav>
 </header>
 
-<main id="home">
-    <h2>محصولات جدید</h2>
-    <div class="products">
-        <!-- محصول 1 -->
-        <div class="card">
-            <img src="https://via.placeholder.com/300x180?text=عطر+1" alt="عطر الویه">
-            <div class="card-body">
-                <h3>عطر الویه</h3>
-                <p>ترکیبی از نت‌های گلابی، خزامی و سدر که احساس تازگی و شیکی می‌دهد.</p>
-                <div class="price">۲,۵۰۰ تومان</div>
-                <button class="btn" onclick="addToCart('عطر الویه',2500)">افزودن به سبد</button>
+<main>
+    <div id="sec-home" class="page-section">
+        <h2>محصولات جدید</h2>
+        <div class="products">
+            <div class="card">
+                <img src="https://via.placeholder.com/300x180?text=عطر+1" alt="عطر الویه">
+                <div class="card-body">
+                    <h3>عطر الویه</h3>
+                    <p>ترکیبی از نت‌های گلابی، خزامی و سدر که احساس تازگی و شیکی می‌دهد.</p>
+                    <div class="price">۲,۵۰۰ تومان</div>
+                    <button class="btn" onclick="addToCart('عطر الویه',2500)">افزودن به سبد</button>
+                </div>
             </div>
-        </div>
-        <!-- محصول 2 -->
-        <div class="card">
-            <img src="https://via.placeholder.com/300x180?text=عطر+2" alt="عطر گلستان">
-            <div class="card-body">
-                <h3>عطر گلستان</h3>
-                <p>عطر گل‌بارانی، ترکیب رز، یاس و سیتروس برای روزهای خاص.</p>
-                <div class="price">۳,۸۰۰ تومان</div>
-                <button class="btn" onclick="addToCart('عطر گلستان',3800)">افزودن به سبد</button>
+            <div class="card">
+                <img src="https://via.placeholder.com/300x180?text=عطر+2" alt="عطر گلستان">
+                <div class="card-body">
+                    <h3>عطر گلستان</h3>
+                    <p>عطر گل‌بارانی، ترکیب رز، یاس و سیتروس برای روزهای خاص.</p>
+                    <div class="price">۳,۸۰۰ تومان</div>
+                    <button class="btn" onclick="addToCart('عطر گلستان',3800)">افزودن به سبد</button>
+                </div>
             </div>
-        </div>
-        <!-- محصول 3 -->
-        <div class="card">
-            <img src="https://via.placeholder.com/300x180?text=عطر+3" alt="عطر نقره‌ای">
-            <div class="card-body">
-                <h3>عطر نقره‌ای</h3>
-                <p>هدیه‌ای از نبوغ ایمال، با نت‌های چوبی و مرکباتی.</p>
-                <div class="price">۴,۲۰۰ تومان</div>
-                <button class="btn" onclick="addToCart('عطر نقره‌ای',4200)">افزودن به سبد</button>
-            </div>
-        </div>
-        <!-- محصول 4 -->
-        <div class="card">
-            <img src="https://via.placeholder.com/300x180?text=عطر+4" alt="عطر آسمان">
-            <div class="card-body">
-                <h3>عطر آسمان</h3>
-                <p>حسی از آزادی با آمبر، خاکستر و هل.</p>
-                <div class="price">۳,۵۰۰ تومان</div>
-                <button class="btn" onclick="addToCart('عطر آسمان',3500)">افزودن به سبد</button>
+            <div class="card">
+                <img src="https://via.placeholder.com/300x180?text=عطر+3" alt="عطر نقره‌ای">
+                <div class="card-body">
+                    <h3>عطر نقره‌ای</h3>
+                    <p>هدیه‌ای از نبوغ ایمال، با نت‌های چوبی و مرکباتی.</p>
+                    <div class="price">۴,۲۰۰ تومان</div>
+                    <button class="btn" onclick="addToCart('عطر نقره‌ای',4200)">افزودن به سبد</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <div id="sec-about" class="page-section hidden">
+        <div class="section">
+            <h2>درباره ما</h2>
+            <p>فروشگاه عطر رایحه در سال ۱۳۹۸ تأسیس شد و از اولین روز به‌دنبال ارائه عطرهای اصیل و با کیفیت است.</p>
+        </div>
+    </div>
+
+    <div id="sec-user-panel" class="page-section hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem">
+            <h2>پنل کاربری: <span id="user-display-name">کاربر</span></h2>
+            <button class="btn btn-danger" onclick="logout()">خروج از حساب</button>
+        </div>
+
+        <div class="section">
+            <h3>اطلاعات حساب و آدرس ارسال</h3>
+            <form id="profileForm" onsubmit="saveProfile(event)">
+                <div class="form-group">
+                    <label>نام و نام خانوادگی:</label>
+                    <input type="text" id="prof-name" required>
+                </div>
+                <div class="form-group">
+                    <label>شماره تماس:</label>
+                    <input type="text" id="prof-phone" required>
+                </div>
+                <div class="form-group">
+                    <label>آدرس دقیق پستی جهت ارسال:</label>
+                    <textarea id="prof-address" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn">بروزرسانی اطلاعات</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h3>تاریخچه سفارشات و وضعیت ارسال</h3>
+            <div id="userOrders" class="order-list">
+                </div>
+        </div>
+        
+        <div class="section">
+            <h3>پیگیری سریع سفارش</h3>
+            <div class="form-group" style="flex-direction:row; gap:1rem;">
+                <input type="text" id="trackInput" placeholder="کد پیگیری سفارش را وارد کنید" style="flex:1">
+                <button class="btn" onclick="trackOrder()">بررسی وضعیت</button>
+            </div>
+            <div id="trackResult" style="font-weight:bold; color:#6a1b9a; margin-top:0.5rem"></div>
+        </div>
+    </div>
 </main>
-
-<!-- درباره ما -->
-<section id="about" class="section">
-    <h2>درباره ما</h2>
-    <p>
-        فروشگاه عطر رایحه در سال ۱۳۹۸ تأسیس شد و از اولین روز به‌دنبال ارائه
-        عطرهای اصیل و با کیفیت برای همه سلیقه‌هاست. هدف ما ایجاد تجربه‌ای لذت‌بخش
-        برای خرید عطرهای معتبر و بویایی‌های منحصر به‌فرد می‌باشد.
-    </p>
-</section>
-
-<!-- قوانین -->
-<section id="terms" class="section">
-    <h2>قوانین فروشگاه</h2>
-    <ul>
-        <li>تمامی قیمت‌ها شامل مالیات می‌باشند.</li>
-        <li>تحویل سفارش‌ها در کمتر از ۳ روز کاری انجام می‌شود.</li>
-        <li>امکان بازگشت کالا تا ۷ روز پس از دریافت به شرط عدم استفاده.</li>
-        <li>پرداخت آنلاین یا درب منزل (نقدی/کارت).</li>
-    </ul>
-</section>
-
-<!-- تماس / آدرس -->
-<section id="contact" class="section">
-    <h2>تماس و آدرس</h2>
-    <p>
-        <strong>آدرس:</strong> خیابان مثال، پلاک ۲۲۲، تهران، ایران<br>
-        <strong>تلفن:</strong> ۰۲۱-۲۲۲۲۲۲۲۲<br>
-        <strong>ایمیل:</strong> info@raihperfume.ir
-    </p>
-</section>
 
 <footer>
     © 2026 فروشگاه عطر رایحه – همه حقوق محفوظ است.
 </footer>
 
-<!-- سبد خرید (مودال) -->
-<div id="cartModal">
-    <div id="cartContent">
-        <h3>سبد خرید</h3>
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <h3 id="authTitle">ورود به حساب</h3>
+        <form id="authForm" onsubmit="handleAuth(event)">
+            <div class="form-group">
+                <label>نام کاربری (ایمیل یا شماره):</label>
+                <input type="text" id="auth-username" required>
+            </div>
+            <div class="form-group">
+                <label>رمز عبور:</label>
+                <input type="password" id="auth-password" required>
+            </div>
+            <div style="margin-top:1rem; display:flex; gap:1rem">
+                <button type="submit" class="btn" id="authBtn">ورود</button>
+                <button type="button" class="btn" style="background:#555" onclick="toggleAuthMode()" id="authToggleBtn">ثبت نام کنید</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal('authModal')">بستن</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="cartModal" class="modal">
+    <div class="modal-content">
+        <h3>سبد خرید شما</h3>
         <div id="cartItems"></div>
         <div class="total" id="cartTotal"></div>
-        <button class="btn" onclick="checkout()">پرداخت و تکمیل سفارش</button>
-        <button class="btn" style="background:#c2185b;margin-left:0.5rem"
-                onclick="closeCart()">بستن</button>
+        <div style="margin-top:1.5rem; display:flex; gap:0.5rem">
+            <button class="btn" onclick="checkout()">تکمیل سفارش و پرداخت</button>
+            <button class="btn btn-danger" onclick="closeModal('cartModal')">بستن</button>
+        </div>
     </div>
 </div>
 
 <script>
-/* ---------- داده‌های سبد خرید ---------- */
+/* ---------- مدیریت وضعیت (State) با LocalStorage ---------- */
 let cart = [];
+let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+let isSignUpMode = false;
 
-/* افزودن به سبد */
+// شبیه‌ساز پایگاه داده کاربران و سفارشات در مرورگر
+if(!localStorage.getItem('usersDB')) localStorage.setItem('usersDB', JSON.stringify({}));
+if(!localStorage.getItem('ordersDB')) localStorage.setItem('ordersDB', JSON.stringify([]));
+
+/* ---------- سیستم ناوبری ---------- */
+function showSection(sectionId) {
+    document.querySelectorAll('.page-section').forEach(el => el.classList.add('hidden'));
+    document.getElementById('sec-' + sectionId).classList.remove('hidden');
+    if(sectionId === 'user-panel') renderUserPanel();
+}
+
+function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+/* ---------- سیستم احراز هویت ---------- */
+function updateAuthUI() {
+    if(currentUser) {
+        document.getElementById('nav-auth').classList.add('hidden');
+        document.getElementById('nav-profile').classList.remove('hidden');
+        document.getElementById('user-display-name').textContent = currentUser.name || currentUser.username;
+    } else {
+        document.getElementById('nav-auth').classList.remove('hidden');
+        document.getElementById('nav-profile').classList.add('hidden');
+        showSection('home');
+    }
+}
+
+function toggleAuthMode() {
+    isSignUpMode = !isSignUpMode;
+    document.getElementById('authTitle').textContent = isSignUpMode ? 'ثبت نام حساب جدید' : 'ورود به حساب';
+    document.getElementById('authBtn').textContent = isSignUpMode ? 'ثبت نام' : 'ورود';
+    document.getElementById('authToggleBtn').textContent = isSignUpMode ? 'ورود به حساب' : 'ثبت نام کنید';
+}
+
+function handleAuth(e) {
+    e.preventDefault();
+    const user = document.getElementById('auth-username').value.trim();
+    const pass = document.getElementById('auth-password').value;
+    let db = JSON.parse(localStorage.getItem('usersDB'));
+
+    if(isSignUpMode) {
+        if(db[user]) { alert('این نام کاربری قبلاً ثبت شده است.'); return; }
+        db[user] = { username: user, password: pass, name: '', phone: '', address: '' };
+        localStorage.setItem('usersDB', JSON.stringify(db));
+        alert('ثبت نام موفقیت آمیز بود! اکنون وارد شوید.');
+        toggleAuthMode();
+    } else {
+        if(db[user] && db[user].password === pass) {
+            currentUser = db[user];
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            closeModal('authModal');
+            updateAuthUI();
+            alert('خوش آمدید!');
+        } else {
+            alert('نام کاربری یا رمز عبور اشتباه است.');
+        }
+    }
+}
+
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    updateAuthUI();
+}
+
+/* ---------- پروفایل کاربری ---------- */
+function renderUserPanel() {
+    if(!currentUser) return;
+    document.getElementById('prof-name').value = currentUser.name || '';
+    document.getElementById('prof-phone').value = currentUser.phone || '';
+    document.getElementById('prof-address').value = currentUser.address || '';
+    renderOrders();
+}
+
+function saveProfile(e) {
+    e.preventDefault();
+    currentUser.name = document.getElementById('prof-name').value;
+    currentUser.phone = document.getElementById('prof-phone').value;
+    currentUser.address = document.getElementById('prof-address').value;
+    
+    // بروزرسانی در دیتابیس
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    let db = JSON.parse(localStorage.getItem('usersDB'));
+    db[currentUser.username] = currentUser;
+    localStorage.setItem('usersDB', JSON.stringify(db));
+    
+    alert('اطلاعات با موفقیت ذخیره شد.');
+    updateAuthUI();
+}
+
+/* ---------- مدیریت سبد خرید ---------- */
 function addToCart(name, price){
     const existing = cart.find(i=>i.name===name);
-    if(existing){
-        existing.qty+=1;
-    }else{
-        cart.push({name,price,qty:1});
-    }
+    if(existing) existing.qty+=1;
+    else cart.push({name, price, qty:1});
     updateCartCount();
     alert(name + " به سبد اضافه شد");
 }
 
-/* بروزرسانی شمارنده سبد */
 function updateCartCount(){
     const cnt = cart.reduce((s,i)=>s+i.qty,0);
     document.getElementById('cartCount').textContent = cnt;
 }
 
-/* باز کردن مودال سبد */
 function openCart(){
     const itemsDiv = document.getElementById('cartItems');
     itemsDiv.innerHTML = '';
@@ -176,57 +305,131 @@ function openCart(){
         document.getElementById('cartTotal').textContent = '';
     }else{
         let total = 0;
-        cart.forEach((it,i)=>{
+        cart.forEach((it, i)=>{
             total+=it.price*it.qty;
             const el = document.createElement('div');
             el.className='cart-item';
             el.innerHTML = `
                 <span>${it.name} (×${it.qty})</span>
-                <span>${it.price*it.qty} تومان</span>
-                <button class="btn" style="background:#c2185b;padding:.2rem .5rem;font-size:.8rem"
-                        onclick="removeItem(${i})">حذف</button>`;
+                <span>${(it.price*it.qty).toLocaleString()} تومان</span>
+                <button class="btn btn-danger" style="padding:.2rem .5rem; font-size:.8rem" onclick="removeItem(${i})">حذف</button>`;
             itemsDiv.appendChild(el);
         });
-        document.getElementById('cartTotal').textContent = 'مجموع: '+total+' تومان';
+        document.getElementById('cartTotal').textContent = 'مجموع قابل پرداخت: '+total.toLocaleString()+' تومان';
     }
-    document.getElementById('cartModal').style.display='flex';
+    openModal('cartModal');
 }
 
-/* بستن مودال */
-function closeCart(){ document.getElementById('cartModal').style.display='none'; }
-
-/* حذف یک آیتم */
 function removeItem(idx){
     cart.splice(idx,1);
     updateCartCount();
-    openCart();   // بازسازی محتوا
+    openCart();
 }
 
-/* پرداخت – نمایش صفحهٔ خلاصه سفارش */
+/* ---------- ثبت سفارش و پرداخت مالی ---------- */
 function checkout(){
-    if(cart.length===0){ alert('سبد خالی است'); return; }
-    closeCart();
-    const orderId = 'RAIH' + Math.floor(Math.random()*1000000);
+    if(!currentUser) {
+        alert('لطفاً ابتدا وارد حساب کاربری خود شوید.');
+        closeModal('cartModal');
+        openModal('authModal');
+        return;
+    }
+    if(!currentUser.address || !currentUser.phone) {
+        alert('لطفاً ابتدا نام، تلفن و آدرس خود را در پنل کاربری تکمیل کنید.');
+        closeModal('cartModal');
+        showSection('user-panel');
+        return;
+    }
+    if(cart.length===0){ alert('سبد شما خالی است'); return; }
+
     const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
-    const summary = `
-        <h2>سفارش شما ثبت شد</h2>
-        <p>شماره پیگیری: <strong>${orderId}</strong></p>
-        <p>مجموع مبلغ: <strong>${total} تومان</strong></p>
-        <p>برای پیگیری، شماره پیگیری را در فرم زیر وارد کنید.</p>
-        <input type="text" id="trackInput" placeholder="شماره پیگیری" style="padding:.4rem;width:70%">
-        <button class="btn" onclick="trackOrder()">پیگیری</button>
-        <div id="trackResult" style="margin-top:1rem;color:#c2185b"></div>`;
-    document.body.innerHTML = summary;
+    
+    // شبیه‌ساز پرداخت آنلاین و ثبت واریزی
+    const confirmPayment = confirm(`مبلغ کل: ${total.toLocaleString()} تومان\nآیا با پرداخت آنلاین و ثبت نهایی سفارش موافقید؟`);
+    
+    if(confirmPayment) {
+        const orderId = 'RAIH' + Math.floor(100000 + Math.random()*900000);
+        const newOrder = {
+            id: orderId,
+            username: currentUser.username,
+            items: [...cart],
+            totalAmount: total,
+            paymentStatus: 'موفق و واریز شده',
+            shippingStatus: 'در حال پردازش', // وضعیت ارسال اولیه
+            date: new Date().toLocaleDateString('fa-IR'),
+            address: currentUser.address
+        };
+
+        // ذخیره در بانک سفارشات
+        let ordersDB = JSON.parse(localStorage.getItem('ordersDB'));
+        ordersDB.push(newOrder);
+        localStorage.setItem('ordersDB', JSON.stringify(ordersDB));
+
+        // خالی کردن سبد خرید
+        cart = [];
+        updateCartCount();
+        closeModal('cartModal');
+        
+        alert(`پرداخت موفقیت‌آمیز بود!\nسفارش شما با کد پیگیری ${orderId} ثبت شد.`);
+        showSection('user-panel');
+    }
 }
 
-/* پیگیری سفارش */
-function trackOrder(){
-    const num = document.getElementById('trackInput').value.trim();
-    if(!num){ alert('شماره وارد کنید'); return; }
-    // در یک برنامه واقعی اینجا درخواست به سرور می‌شد.
-    document.getElementById('trackResult').textContent =
-        'سفارش شما ('+num+') در مسیر تحویل است. لطفاً صبر کنید.';
+/* ---------- نمایش وضعیت ارسال و تاریخچه تراکنش‌ها ---------- */
+function renderOrders() {
+    const ordersDiv = document.getElementById('userOrders');
+    ordersDiv.innerHTML = '';
+    const ordersDB = JSON.parse(localStorage.getItem('ordersDB'));
+    const myOrders = ordersDB.filter(o => o.username === currentUser.username);
+
+    if(myOrders.length === 0) {
+        ordersDiv.innerHTML = '<p class="empty">هیچ سفارشی ثبت نشده است.</p>';
+        return;
+    }
+
+    myOrders.reverse().forEach(order => {
+        let statusClass = 'status-processing';
+        if(order.shippingStatus === 'ارسال شده') statusClass = 'status-shipped';
+        if(order.shippingStatus === 'تحویل شده') statusClass = 'status-delivered';
+
+        const el = document.createElement('div');
+        el.className = 'order-item';
+        el.style.flexDirection = 'column';
+        el.style.alignItems = 'flex-start';
+        el.innerHTML = `
+            <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:0.5rem">
+                <strong>کد پیگیری: ${order.id}</strong>
+                <span class="status-badge ${statusClass}">${order.shippingStatus}</span>
+            </div>
+            <div style="font-size:0.9rem; color:#555; width:100%">
+                تاریخ: ${order.date} | مبلغ واریزی: ${order.totalAmount.toLocaleString()} تومان (${order.paymentStatus})<br>
+                <small>اقلام: ${order.items.map(i => `${i.name} (${i.qty})`).join('، ')}</small><br>
+                <small style="color:#777">ارسال به: ${order.address}</small>
+            </div>
+        `;
+        ordersDiv.appendChild(el);
+    });
 }
+
+/* ---------- پیگیری آنلاین سفارش ---------- */
+function trackOrder(){
+    const code = document.getElementById('trackInput').value.trim();
+    if(!code){ alert('لطفاً کد پیگیری را وارد کنید'); return; }
+    
+    const ordersDB = JSON.parse(localStorage.getItem('ordersDB'));
+    const foundOrder = ordersDB.find(o => o.id === code);
+    
+    const resultDiv = document.getElementById('trackResult');
+    if(foundOrder) {
+        resultDiv.innerHTML = `وضعیت سفارش ${code}: <span style="color:#4caf50">${foundOrder.shippingStatus}</span><br>
+        <small style="color:#555">محصولات در حال ارسال به: ${foundOrder.address}</small>`;
+    } else {
+        resultDiv.innerHTML = 'سفارشی با این کد پیگیری پیدا نشد. لطفاً دقت کنید.';
+    }
+}
+
+// مقداردهی اولیه برنامه
+updateAuthUI();
 </script>
 </body>
 </html>
